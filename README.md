@@ -31,7 +31,7 @@
 <div align="center">
 
 <a href="https://cycy.fun/lyb" target="_blank">
-  <img src="./ad.webp" alt="Buy Me A Coffee" style="max-width:100%; height:auto;" />
+  <img src="./img/rin/ad.webp" alt="Buy Me A Coffee" style="max-width:100%; height:auto;" />
 </a>
 
 <a href="https://www.buymeacoffee.com/cycyhnb" target="_blank">
