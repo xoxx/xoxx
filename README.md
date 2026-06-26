@@ -1,325 +1,733 @@
-<div align="center">
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<!-- 移动端自适应 -->
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<!-- 禁止搜索引擎收录 -->
+<meta name="robots" content="none">
+<title>怸歪小站-欢迎页</title>
+<script>
+// 页面加载前优先设置主题，防止闪烁
+const savedTheme = localStorage.getItem("theme");
+// 获取系统深色模式配置
+const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+// 优先级：本地存储 > 系统默认
+const initTheme = savedTheme || (systemDark ? "dark" : "light");
+document.documentElement.setAttribute("data-theme", initTheme);
+</script>
+<style>
+/* ========== 全局变量定义（浅色/深色共用变量） ========== */
+:root {
+  --bg-color:#fefefe;                /* 页面背景色-浅色 */
+  --text-primary:#333;               /* 主文字颜色 */
+  --text-secondary:#666;             /* 次要文字 */
+  --text-desc:#777;                  /* 描述文字、页脚文字 */
+  --btn-bg:transparent;              /* 按钮背景透明 */
+  --btn-color:#555;                  /* 按钮文字颜色 */
+  --btn-border:1px solid #999;      /* 按钮边框 */
+  --btn-radius:4px;                  /* 按钮圆角 */
+  --toggle-color:#555;               /* 切换按钮颜色 */
+  --toggle-border:1px solid #999;    /* 切换按钮边框 */
+  --pinyin-color:#888;               /* 拼音文字颜色 */
+  --main-blue:#409eff;               /* 主题蓝色（hover高亮） */
+  --btn-w:220px;                     /* 按钮宽度 */
+  --btn-h:56px;                      /* 按钮高度 */
+  --btn-gap:12px;                    /* 按钮之间间距 */
+}
+/* 深色模式变量覆盖 */
+[data-theme="dark"] {
+  --bg-color:#121212;
+  --text-primary:#f0f0f0;
+  --text-secondary:#aaa;
+  --text-desc:#888;
+  --btn-bg:transparent;
+  --btn-color:#f0f0f0;
+  --btn-border:1px solid #666;
+  --toggle-color:#f0f0f0;
+  --toggle-border:1px solid #666;
+  --pinyin-color:#aaa;
+}
 
-[![Typing SVG](https://readme-typing-svg.demolab.com?font=Fira+Code&pause=1000&width=435&lines=console.log(%22Hello%2C%20World%22);偷小孙同学的，👆去他家！&center=true&size=27)](https://github.com/sun0225SUN)
+/* ========== 全局样式重置 ========== */
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-weight:500;
+  text-decoration:none;
+  /* 统一过渡动画，切换主题更顺滑 */
+  transition:color .3s ease,background-color .3s ease,border-color .3s ease;
+}
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://cdn.jsdelivr.net/gh/oxn/oxn/assets/images/coding.gif" />
-  <source media="(prefers-color-scheme: light)" srcset="https://cdn.jsdelivr.net/gh/oxn/oxn/assets/images/developer.svg" height="225px" />
-  <img src="https://cdn.jsdelivr.net/gh/oxn/oxn/assets/images/coding.gif" />
-</picture>
+/* 页面主体布局：垂直弹性布局，内容垂直居中 */
+body{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  background-color:var(--bg-color);
+  /* 多字体兼容，优先苹方、微软雅黑 */
+  font-family:"lucida grande","lucida sans unicode",lucida,helvetica,"PingFang SC","Hiragino Sans GB","STHeiti Light","Microsoft YaHei","WenQuanYi Micro Hei";
+  position:relative;
+  padding:20px;
+  line-height:1.4;
+}
 
-<div>&nbsp;</div>
+/* 中间主体内容区域，自动占满剩余高度 */
+.main-content{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+}
 
-<div>
-  <a href="https://x.com/cycyhnb"><img src="https://img.shields.io/badge/Twitter-推特-blue" /></a>&emsp;
-  <a href="https://www.youtube.com/@怸歪"><img src="https://img.shields.io/badge/YouTube-油管-c32136" /></a>&emsp;
-  <a href="https://cycy.fun/"><img src="https://img.shields.io/badge/Website-博客-8c36db" /></a>&emsp;
-  <a href="https://776789.xyz/zz"><img src="https://img.shields.io/badge/￥￥￥$$$-资助-07c160" /></a>&emsp;
-  <a href="https://space.bilibili.com/3707012544202886"><img src="https://img.shields.io/badge/Bilibili-B站-ff69b4" /></a>&emsp;
-  <!-- visitor -->
-  <img src="https://komarev.com/ghpvc/?username=oxn&label=Views&color=orange&style=flat" alt="访问量统计" />&emsp;
-  <!-- wakatime -->
-  <a href="https://wakatime.com/@oxn"><img src="https://wakatime.com/badge/user/e94a1dac-ef03-4ad8-a0d5-101dde104813.svg" /></a>
+/* 明暗切换悬浮按钮 */
+.mode-toggle{
+  position:fixed;
+  top:20px;
+  right:20px;
+  width:45px;
+  height:45px;
+  border-radius:50%;
+  background:transparent;
+  color:var(--toggle-color);
+  border:var(--toggle-border);
+  font-size:22px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  line-height:1;    /* 核心：消除文字默认行高上下空白 */
+  padding:0;        /* 清空内边距 */
+  z-index:99;
+  outline:none;
+}
+/* 键盘聚焦样式，无障碍优化 */
+.mode-toggle:focus-visible{
+  box-shadow:0 0 0 2px rgba(64,158,255,.5);
+}
+
+/* 大标题自适应字号 */
+h1{
+  font-size:clamp(2.5rem,8vw,80px);
+  line-height:1.1;
+  margin-bottom:30px;
+  color:var(--text-primary);
+  font-weight:900;
+}
+/* 汉字拼音注释排版 */
+h1 ruby{
+  text-align:center;
+}
+h1 rt{
+  font-size:.28em;
+  color:var(--pinyin-color);
+  line-height:1;
+  margin-bottom:.1em;
+  font-weight:700;
+}
+
+/* 二级副标题 */
+h2{
+  font-size:clamp(1.2rem,3vw,28px);
+  color:var(--text-secondary);
+  margin-bottom:40px;
+  line-height:1.4;
+  font-weight:600;
+}
+
+/* 引导描述文本 */
+p.desc{
+  font-size:18px;
+  line-height:1.5;
+  color:var(--text-desc);
+  margin-bottom:16px;
+}
+
+/* 按钮网格容器：两列自适应 */
+.btn-wrap{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(var(--btn-w), 1fr));
+  gap:var(--btn-gap);
+  justify-content:center;
+  width:100%;
+  max-width:calc(var(--btn-w) * 2 + var(--btn-gap));
+  margin-bottom:0px !important;
+}
+/* 按钮链接样式 */
+.btn-wrap a{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  width:var(--btn-w);
+  height:var(--btn-h);
+  color:var(--btn-color);
+  background-color:var(--btn-bg);
+  border:var(--btn-border);
+  border-radius:var(--btn-radius);
+  transition:all .3s ease;
+  outline:none;
+}
+.btn-wrap a .btn-main{
+  font-size:16px;
+  font-weight:600;
+}
+.btn-wrap a .btn-sub{
+  font-size:12px;
+  color:var(--text-desc);
+  margin-top:3px;
+}
+/* 按钮悬浮上浮+阴影 */
+.btn-wrap a:hover{
+  transform:translateY(-2px);
+  box-shadow:0 4px 15px rgba(64,158,255,.2);
+}
+/* 深色模式阴影加深 */
+[data-theme="dark"] .btn-wrap a:hover{
+  box-shadow:0 4px 15px rgba(64,158,255,.4);
+}
+.btn-wrap a:active{
+  transform:translateY(0);
+}
+.btn-wrap a:focus-visible{
+  box-shadow:0 0 0 2px rgba(64,158,255,.5);
+}
+
+/* 手机端按钮改为单列 */
+@media (max-width:520px){
+  .btn-wrap{
+    grid-template-columns:1fr;
+    max-width:var(--btn-w);
+  }
+}
+
+/* 自定义HTML预留区域，容器彻底不占用高度 */
+.custom-html-area {
+  display: contents !important;
+}
+/* 预留区域内元素全部紧凑无间距 */
+.custom-html-area span,
+.custom-html-area p,
+.custom-html-area div,
+.custom-html-area a,
+.custom-html-area br {
+  line-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  font-size: 12px;
+  color: var(--text-secondary);
+  vertical-align: top;
+  display: inline-block;
+}
+
+/* ICP备案行样式 */
+.icp-area{
+  width:100%;
+  text-align:center;
+  padding:4px 0;
+  color:var(--text-desc);
+  font-size:11px;
+  line-height:1.3;
+}
+.icp-area a:hover{
+  color:var(--main-blue);
+}
+
+/* 底部版权行 */
+.footer-copyright{
+  width:100%;
+  text-align:center;
+  padding:0px 0 4px;
+  color:var(--text-desc);
+  font-size:12px;
+  line-height:1.3;
+}
+.footer-copyright .rss-trigger{
+  cursor:pointer;
+  color:inherit;
+  transition: transform 0.2s ease;
+}
+.footer-copyright .rss-trigger:hover{
+  color:var(--main-blue);
+  text-decoration:underline;
+  transform: scale(1.02);
+}
+.footer-copyright a:hover{
+  color:var(--main-blue);
+}
+
+/* 页脚外层容器居中 */
+.custom-footer {
+  width: 100%;
+  max-width: 1024px;
+  margin: 0 auto 0 !important;
+  text-align: center;
+}
+.custom-footer-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.01rem;
+  align-items: center;
+}
+.custom-footer-text {
+  font-size: 0.875rem;
+  color: var(--text-desc);
+  line-height:1.3;
+}
+/* ICP链接常态与正文同色，hover再高亮 */
+.custom-footer-text a {
+  color: inherit;
+  text-decoration: underline;
+}
+.custom-footer-text a:hover {
+  opacity: 0.8;
+  color: var(--main-blue);
+}
+
+/* 运行时间文字 */
+#site-time {
+  font-size: 0.85em;
+  color: var(--text-desc);
+  letter-spacing: 0.01em;
+  line-height:1.3;
+}
+
+/* ========== 核心修复：底部链接防换行错位 ========== */
+.footer-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  line-height: 1.4;
+}
+.footer-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--text-desc);
+  text-decoration: none;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+}
+.footer-links a:hover {
+  opacity: 0.7;
+  color: var(--main-blue);
+}
+.footer-links .sep {
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  line-height: 1;
+}
+
+/* 删除缩小图标这段媒体查询，彻底取消压缩 */
+/*
+@media (max-width: 420px) {
+  .footer-links {
+    gap: 0.2rem;
+  }
+  .footer-links svg {
+    width: 11px !important;
+    height: 11px !important;
+  }
+}
+*/
+
+/* 超小屏手机进一步压缩尺寸 */
+@media (max-width: 420px) {
+  .footer-links {
+    gap: 0.2rem;
+  }
+  .footer-links svg {
+    width: 11px !important;
+    height: 11px !important;
+  }
+}
+
+/* 双色调徽章样式（YouTube/资助按钮） */
+.badge-dual {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: system-ui, -apple-system, sans-serif;
+  border-radius: 6px;
+  overflow: hidden;
+  height: 22px;
+  vertical-align: middle;
+  margin: 4px 6px;
+  user-select: none;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.22),
+    0 2px 6px rgba(0, 0, 0, 0.32);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.badge-dual:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.28),
+    0 3px 9px rgba(0, 0, 0, 0.4);
+}
+.badge-left-part, .badge-right-part {
+  color: #ffffff;
+  padding: 0 10px;
+  line-height: 22px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+.badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+/* 弹窗悬浮层样式 */
+.rss-popup {
+  position: fixed;
+  background: var(--bg-color);
+  border: 1px solid var(--text-desc);
+  border-radius: 12px;
+  padding: 10px 14px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.14);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.22s ease, transform 0.22s ease, visibility 0.22s ease;
+  z-index: 9999;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.rss-popup.show {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+/* 弹窗小三角箭头 */
+.rss-popup::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  width: 10px;
+  height: 10px;
+  background: var(--bg-color);
+  border-right: 1px solid var(--text-desc);
+  border-bottom: 1px solid var(--text-desc);
+  transform: translateX(-50%) rotate(45deg);
+}
+.rss-popup-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.rss-popup-title {
+  font-size: 13px;
+  line-height: 1;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+.rss-popup-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.rss-popup-link {
+  font-size: 12px;
+  line-height: 1;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.rss-popup-link:hover {
+  color: var(--main-blue);
+}
+.rss-popup-sep {
+  font-size: 12px;
+  line-height: 1;
+  color: var(--text-desc);
+}
+</style>
+</head>
+<body>
+<!-- 明暗切换按钮 -->
+<button class="mode-toggle" onclick="toggleMode()">☀️</button>
+
+<!-- 页面中间主内容区 -->
+<div class="main-content">
+  <h1>
+  <ruby>欢<rt>huān</rt></ruby>
+  <ruby>迎<rt>yíng</rt></ruby>
+  <ruby>光<rt>guāng</rt></ruby>
+  <ruby>临<rt>lín</rt></ruby>
+  <br>
+  <ruby>怸<rt>xī</rt></ruby>
+  <ruby>歪<rt>wāi</rt></ruby>
+  <ruby>小<rt>xiǎo</rt></ruby>
+  <ruby>站<rt>zhàn</rt></ruby>
+  </h1>
+
+  <h2>能看到这个页面说明你很牛逼了！</h2>
+
+  <p class="desc">更多内容点击下方链接访问我的主页~</p>
+
+  <!-- 四组入口按钮 -->
+  <div class="btn-wrap">
+    <a href="https://cycy.fun" target="_blank" rel="noopener noreferrer nofollow">
+      <span class="btn-main">怸歪小站</span>
+      <span class="btn-sub">我的主站：cycy.fun</span>
+    </a>
+    <a href="https://347777.xyz" target="_blank" rel="noopener noreferrer nofollow">
+      <span class="btn-main">怸歪博客</span>
+      <span class="btn-sub">博客站：347777.xyz</span>
+    </a>
+    <a href="https://776789.xyz" target="_blank" rel="noopener noreferrer nofollow">
+      <span class="btn-main">镜像一站</span>
+      <span class="btn-sub">镜像一站：776789.xyz</span>
+    </a>
+    <a href="https://9020028.xyz" target="_blank" rel="noopener noreferrer nofollow">
+      <span class="btn-main">一个导航</span>
+      <span class="btn-sub">一个导航：9020028.xyz</span>
+    </a>
+  </div>
 </div>
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://cdn.jsdelivr.net/gh/oxn/oxn/profile-snake-contrib/github-contribution-grid-snake-dark.svg" />
-  <source media="(prefers-color-scheme: light)" srcset="https://cdn.jsdelivr.net/gh/oxn/oxn/profile-snake-contrib/github-contribution-grid-snake.svg" />
-  <img alt="github-snake" src="https://cdn.jsdelivr.net/gh/oxn/oxn/profile-snake-contrib/github-contribution-grid-snake-dark.svg" />
-</picture>
-
-<div align="center">
-
-<a href="https://cycy.fun/lyb" target="_blank">
-  <img src="./img/rin/ad.webp" alt="Buy Me A Coffee" style="max-width:100%; height:auto;" />
-</a>
-
-<a href="https://www.buymeacoffee.com/cycyhnb" target="_blank">
-  <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" height="60" width="217" />
-</a>
-
-<!-- <table style="margin-top: 20px;">
-  <tbody>
-    <tr>
-      <td align="center">
-        <img src="https://776789.xyz/img/wxsk.webp" width="250px"  alt="wxpay" style="border-radius:10px;" />
-      </td>
-      <td align="center">
-        <img src="https://776789.xyz/img/zfbsk.webp" width="250px"  alt="alipay" style="border-radius:10px;" />
-      </td>
-    </tr>
-  </tbody>
-</table> -->
-</div>
-</div>
-<div>&nbsp;</div>
-
-
-#  🙋 你好！
-<div align="center">
-<table>
-<tr><td>
-
-### 🤺 关于我：
-
-<img align="right" width="88" src="https://cdn.jsdelivr.net/gh/oxn/oxn/assets/images/jobs.png" />
-
-<p>&emsp;&emsp;一个浑浑噩噩的八零后，网上都调侃我们：</p>
-&emsp;&emsp;上小学的时候，大学是不要钱的；上大学的时候，小学是不要钱的；
-<br>&emsp;&emsp;当他们没有参加工作的时候，工作是分配的；当他们参加工作的时候，打破脑袋才能勉强混一个糊口的工作；<br>&emsp;&emsp;当他们不挣钱的时候，房子是分配的；当他们挣钱的时候，房子也买不起了。
-<p>&emsp;&emsp;<strong>总之没有那一代人是最幸福的，也没有那一代人是最不幸的，活在当下知足常乐！</strong></p>
-
-</tr></td>
-
-<tr><td>
-
-### 📝 最新博客
-
-<img align="right" width="88" src="https://cdn.jsdelivr.net/gh/oxn/oxn/assets/images/astronaut.png" />
-
-<!-- feed start -->
-- Jun 15 - [【分享】后知后觉最便宜的顶级域名XYZ，50多元就用10年，搭配Cloudflare有N王炸玩法](https://cycy.fun/2026/06/xyz50yuan/)
-- May 24 - [【分享】鸿蒙next、安卓、iOS、windows文件互传](https://cycy.fun/2026/05/hongmenkuapingtaifenxiang/)
-- Jun 18 - [【记录】搬家到腾讯轻量应用服务，解决固定链接失效](https://cycy.fun/2025/06/2025618banjiale/)
-- Mar 07 - [好物分享【WordPress优化插件】WPOPT v2.4.1](https://cycy.fun/2025/03/wordpress-wpopt/)
-- Feb 22 - [【分享】myCopyRight版权插件，针对wing主题优化版](https://cycy.fun/2025/02/mycopyright/)
-<!-- feed end -->
-
-</td></tr>
-
-<!-- <tr><td>
-
-### 📊 WakaTime
-
-<picture>
-  <source
-    srcset="https://github-readme-stats.vercel.app/api/wakatime?username=sun0225SUN&layout=compact&text_color=f0f6fc&bg_color=00000000&hide_border=true&hide_title=true"
-    media="(prefers-color-scheme: dark)"
-  />
-  <source
-    srcset="https://github-readme-stats.vercel.app/api/wakatime?username=sun0225SUN&layout=compact&text_color=1f2328&bg_color=00000000&hide_border=true&hide_title=true"
-    media="(prefers-color-scheme: light)"
-  />
-  <img src="https://github-readme-stats.vercel.app/api/wakatime?username=sun0225SUN&layout=compact&text_color=f0f6fc&bg_color=00000000&hide_border=true&hide_title=true" />
-</picture>
-
-</td></tr> -->
-
-<tr><td>
-
-### 📊 WakaTime
-
-<!--START_SECTION:waka-->
-**I'm a Night 🦉** 
-
-```text
-🌞 Morning                455 commits         █████░░░░░░░░░░░░░░░░░░░░   20.04 % 
-🌆 Daytime                640 commits         ███████░░░░░░░░░░░░░░░░░░   28.19 % 
-🌃 Evening                569 commits         ██████░░░░░░░░░░░░░░░░░░░   25.07 % 
-🌙 Night                  606 commits         ███████░░░░░░░░░░░░░░░░░░   26.70 % 
-```
-📅 **I'm Most Productive on Friday** 
-
-```text
-Monday                   360 commits         ████░░░░░░░░░░░░░░░░░░░░░   15.86 % 
-Tuesday                  327 commits         ████░░░░░░░░░░░░░░░░░░░░░   14.41 % 
-Wednesday                304 commits         ███░░░░░░░░░░░░░░░░░░░░░░   13.39 % 
-Thursday                 302 commits         ███░░░░░░░░░░░░░░░░░░░░░░   13.30 % 
-Friday                   379 commits         ████░░░░░░░░░░░░░░░░░░░░░   16.70 % 
-Saturday                 264 commits         ███░░░░░░░░░░░░░░░░░░░░░░   11.63 % 
-Sunday                   334 commits         ████░░░░░░░░░░░░░░░░░░░░░   14.71 % 
-```
-
-
-📊 **This Week I Spent My Time On** 
-
-```text
-🕑︎ Time Zone: Asia/Shanghai
-
-💬 Programming Languages: 
-No Activity Tracked This Week
-
-🔥 Editors: 
-No Activity Tracked This Week
-
-💻 Operating System: 
-No Activity Tracked This Week
-```
-
-
- Last Updated on 19/06/2026 02:29:19 UTC
-<!--END_SECTION:waka-->
-
-</td></tr>
-
-</table>
+<!-- 预留自定义HTML区域，无占位高度 -->
+<div class="custom-html-area">
 </div>
 
-<img width="200%" src="https://cdn.jsdelivr.net/gh/oxn/oxn/assets/images/hr.gif" />
+<!-- 页脚区域 -->
+<div class="custom-footer">
+	<div class="custom-footer-content">
+		<p class="custom-footer-text"> 已经到底了哦~ </p>
 
-<div align="center">
+        <!-- 双色块按钮行 -->
+        <div class="badge-row">
+            <a href="https://www.youtube.com/@%E6%80%B8%E6%AD%AA" target="_blank" rel="noopener noreferrer nofollow">
+                <span class="badge-dual">
+                    <span class="badge-left-part" style="background: linear-gradient(135deg, #454545 0%, #333 100%);">YouTube</span>
+                    <span class="badge-right-part" style="background: linear-gradient(135deg, #cb0a0a 0%, #9b0707 100%);">油管</span>
+                </span>
+            </a>
+            <a href="https://776789.xyz/zz" target="_blank" rel="noopener noreferrer nofollow">
+                <span class="badge-dual">
+                    <span class="badge-left-part" style="background: linear-gradient(135deg, #454545 0%, #333 100%);">$$$</span>
+                    <span class="badge-right-part" style="background: linear-gradient(135deg, #07c160 0%, #06a050 100%);">资助</span>
+                </span>
+            </a>
+        </div>
 
-<img src="https://cdn.jsdelivr.net/gh/oxn/oxn/assets/images/man_run.png" width="250" height="250" />
+		<!-- GitHub、B站、邮箱链接 -->
+		<p class="custom-footer-text footer-links">
+			<a href="https://github.com/oxn/" target="_blank" rel="noopener noreferrer" title="GitHub">
+				<svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor">
+					<path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
+				</svg>
+			</a>
+			<span class="sep">|</span>
+			<a href="https://space.bilibili.com/3707012544202886" target="_blank" rel="noopener noreferrer" title="Bilibili">
+				<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+					<path d="M17.813 4.653h.854c1.51.054 2.769.578 3.773 1.574 1.004.995 1.524 2.249 1.56 3.76v7.36c-.036 1.51-.556 2.769-1.56 3.773s-2.262 1.524-3.773 1.56H5.333c-1.51-.036-2.769-.556-3.773-1.56S.036 18.858 0 17.347v-7.36c.036-1.511.556-2.765 1.56-3.76 1.004-.996 2.262-1.52 3.773-1.574h.774l-1.174-1.12a1.234 1.234 0 0 1-.373-.906c0-.356.124-.658.373-.907l.027-.027c.267-.249.573-.373.92-.373.347 0 .653.124.92.373L9.653 4.44c.071.071.134.142.187.213h4.267a.836.836 0 0 1 .16-.213l2.853-2.747c.267-.249.573-.373.92-.373.347 0 .662.151.929.4.267.249.391.551.391.907 0 .355-.124.657-.373.906zM5.333 7.24c-.746.018-1.373.276-1.88.773-.506.498-.769 1.13-.786 1.894v7.52c.017.764.28 1.395.786 1.893.507.498 1.134.756 1.88.773h13.334c.746-.017 1.373-.275 1.88-.773.506-.498.769-1.129.786-1.893v-7.52c-.017-.765-.28-1.396-.786-1.894-.507-.497-1.134-.755-1.88-.773zM8 11.107c.373 0 .684.124.933.373.25.249.383.569.4.96v1.173c-.017.391-.15.711-.4.96-.249.25-.56.374-.933.374s-.684-.125-.933-.374c-.25-.249-.383-.569-.4-.96V12.44c0-.373.129-.689.386-.947.258-.257.574-.386.947-.386zm8 0c.373 0 .684.124.933.373.25.249.383.569.4.96v1.173c-.017.391-.15.711-.4.96-.249.25-.56.374-.933.374s-.684-.125-.933-.374c-.25-.249-.383-.569-.4-.96V12.44c.017-.391.15-.711.4-.96.249-.249.56-.373.933-.373Z"></path>
+				</svg>
+			</a>
+			<span class="sep">|</span>
+			<a href="mailto:aszx@qq.com" title="发送邮件">
+				<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+					<rect x="2" y="4" width="20" height="16" rx="2"></rect>
+					<path d="M22 4L12 13 2 4"></path>
+				</svg>
+			</a>
+		</p>
 
-<div>
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://readme-jokes.vercel.app/api?hideBorder&bgColor=%23121212" />
-    <source media="(prefers-color-scheme: light)" srcset="https://readme-jokes.vercel.app/api?hideBorder&bgColor=%ffffff" />
-    <img alt="Jokes Card" src="https://readme-jokes.vercel.app/api?hideBorder&bgColor=%23121212" />
-  </picture>
+		<p class="custom-footer-text">
+			<a href="https://icp.gov.moe/?keyword=20262789" target="_blank">萌ICP备20262789号</a>
+		</p>
+
+		<!-- 网站运行时长 -->
+		<p id="site-time">本站已苦苦支撑很久了！</p>
+
+		<!-- CDN与服务商链接行（已修复移动端串行问题） -->
+		<p class="custom-footer-text footer-links">
+			<span>Protected by</span>
+			<a href="https://www.cloudflare.com/" target="_blank" rel="noopener noreferrer" title="Cloudflare">
+				<svg width="16" height="8" viewBox="0 0 40 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<path fill="#F6821F" d="m27.16 18.507.204-.735c.242-.873.152-1.68-.255-2.274-.374-.547-.998-.868-1.755-.906l-14.346-.19a.3.3 0 0 1-.127-.034.3.3 0 0 1-.099-.09.31.31 0 0 1-.03-.27.4.4 0 0 1 .128-.185.37.37 0 0 1 .205-.081l14.479-.192c1.717-.082 3.576-1.536 4.227-3.31l.826-2.25a.55.55 0 0 0 .022-.298C29.702 3.29 25.94 0 21.44 0c-4.146 0-7.667 2.792-8.928 6.673a4.1 4.1 0 0 0-2.978-.86c-1.99.206-3.589 1.877-3.786 3.953a4.6 4.6 0 0 0 .11 1.547C2.605 11.41 0 14.189 0 17.603q0 .459.065.911c.009.07.042.134.093.18.05.047.116.072.183.073l26.485.003h.007a.34.34 0 0 0 .205-.076.36.36 0 0 0 .122-.187"></path>
+					<path fill="#FBAD41" d="M31.94 8.153q-.2 0-.397.01a.2.2 0 0 0-.062.014.2.2 0 0 0-.091.061.24.24 0 0 0-.054.098l-.564 2.033c-.243.874-.152 1.68.254 2.274.375.547.998.868 1.756.906l3.058.191a.3.3 0 0 1 .123.035.28.28 0 0 1 .142.22.3.3 0 0 1-.015.14.4.4 0 0 1-.128.185.37.37 0 0 1-.205.08l-3.177.192c-1.725.083-3.585 1.536-4.235 3.31l-.23.626a.18.18 0 0 0 .017.16.166.166 0 0 0 .134.08h10.941c.064 0 .126-.021.176-.06a.3.3 0 0 0 .106-.16 8.5 0 0 0 .291-2.216c0-4.517-3.51-8.18-7.84-8.18"></path>
+				</svg>
+			</a>
+			<span class="sep">|</span>
+			<span>Storage by</span>
+			<a href="https://www.backblaze.com/" target="_blank" rel="noopener noreferrer" title="Backblaze">
+				<svg width="12" height="12" viewBox="0 0 64 64" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+					<path d="M24.664 0c3.5 3.1 6.6 6.998 7.776 11.663.4 1.944.4 3.5-.4 5.443-.4 1.555-1.166 3.1-1.944 5.054-.778 2.333-.778 5.054.4 7.776C31.663 32.27 32.05 35 32.05 38.1c-.4 3.1-2.333 5.054-5.443 5.054-1.944 0-3.888-.4-5.832-1.166-3.888-1.944-5.832-4.665-6.22-8.942-.4-5.832 1.944-10.497 6.22-13.996 1.555-1.555 3.1-3.1 4.277-5.054 2.333-4.277 1.944-8.553.4-12.83-.4-.4-.4-.778-.778-1.166zm15.94 13.22l-1.166 4.277a14.68 14.68 0 0 0 0 5.832c.4 2.333 1.166 4.277 3.1 6.22 1.555 1.166 3.1 2.72 4.665 3.888 4.665 4.277 5.054 9.33 3.5 14.774-1.166 3.888-4.277 5.443-8.164 6.6-3.888.778-7.387-1.166-8.942-4.665-1.166-2.333-1.166-4.665.4-6.6 1.944-3.1 2.333-6.6 1.166-10.108l-1.166-4.665c-1.166-2.72-.778-5.443.4-7.776 1.555-3.1 3.888-5.443 6.22-7.776zm6.6 43.93c-.4.4-.4.778-.778 1.166-2.72 3.1-5.832 4.665-10.108 5.443-5.054.778-10.108-.4-14.385-2.72-3.888-1.944-6.6-5.443-8.164-9.72-1.166-2.72-1.555-5.832-1.166-8.942 0-.4 0-.778.4-.778 0 0 .4 0 .4.4 2.72 3.1 6.22 4.665 10.108 5.054 1.166-.4 2.333-.4 3.5-.4.778 0 1.166.4 1.166 1.166.4.778.4 1.555.778 2.333 1.555 4.277 4.665 6.6 9.33 7.776 2.333.4 4.665.4 6.998-.778h1.944c0-.4 0 0 0 0z"></path>
+				</svg>
+			</a>
+			<span class="sep">|</span>
+			<span>Analytics by</span>
+			<a href="https://umami.is/" target="_blank" rel="noopener noreferrer" title="Umami Analytics">
+				<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+					<path d="M2.203 8.611H.857a.845.845 0 0 0-.841.841v.858a13.31 13.31 0 0 0-.016.6c0 6.627 5.373 12 12 12 6.527 0 11.837-5.212 11.996-11.701 0-.025.004-.05.004-.075V9.452a.845.845 0 0 0-.841-.841h-1.346c-1.159-4.329-5.112-7.521-9.805-7.521-4.692 0-8.645 3.192-9.805 7.521Zm18.444 0H3.37c1.127-3.702 4.57-6.399 8.638-6.399 4.069 0 7.512 2.697 8.639 6.399Z"></path>
+				</svg>
+			</a>
+		</p>
+	</div>
 </div>
 
-<img align="left" width="150" src="https://cdn.jsdelivr.net/gh/oxn/oxn/assets/images/left.png" />
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://github-readme-streak-stats.herokuapp.com/?user=oxn&theme=dark&hide_border=true" />
-  <source media="(prefers-color-scheme: light)" srcset="https://github-readme-streak-stats.herokuapp.com/?user=oxn&theme=light&hide_border=true" />
-  <img src="https://github-readme-streak-stats.herokuapp.com/?user=oxn&theme=dark&hide_border=true" />
-</picture>
-<img align="right" width="150"  src="https://cdn.jsdelivr.net/gh/oxn/oxn/assets/images/right.png" />
-
-<img src="https://cdn.jsdelivr.net/gh/oxn/oxn/github-metrics/base.svg" />
-
-<table>
-  <tr>
-    <td>
-      <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="https://github-readme-activity-graph.vercel.app/graph?username=oxn&theme=xcode&bg_color=FF000000&hide_border=true" />
-        <source media="(prefers-color-scheme: light)" srcset="https://github-readme-activity-graph.vercel.app/graph?username=oxn&theme=xcode&bg_color=FF000000&color=000000&hide_border=true" />
-        <img src="https://github-readme-activity-graph.vercel.app/graph?username=oxn&theme=xcode&bg_color=FF000000&hide_border=true" />
-      </picture>
-  </tr>
-</table>
-
+<!-- 底部版权行，点击弹出镜像站点弹窗 -->
+<div class="footer-copyright">
+© <script>document.write(new Date().getFullYear())</script> 生活不易 | <span class="rss-trigger" id="rssTrigger">怸歪小站</span>
 </div>
 
-<img width="200%" src="https://cdn.jsdelivr.net/gh/oxn/oxn/assets/images/hr.gif" />
-
-<div align="center" >
-
-<img src="https://cdn.jsdelivr.net/gh/oxn/oxn/assets/images/mb.png" width="250" height="250" />
-
-<div><img src="https://quotes-github-readme.vercel.app/api?type=horizontal&theme=dark" /><br/></div>
-
-<!-- <div><img src="https://github-profile-trophy.vercel.app/?username=sun0225SUN&theme=gruvbox&row=1&column=7&no-frame=true&no-bg=true" /><br/></div> -->
-
-<table>
-  <tr>
-    <td><img src="https://wakatime.com/share/@42d0678c-368b-448b-9a77-5d21c5b55352/d07b5f65-d3e1-4896-897c-1695c560a7dc.svg" width="500" alt="Wakatime"/></td>
-    <td><img src="https://wakatime.com/share/@42d0678c-368b-448b-9a77-5d21c5b55352/39a6f115-6058-44ce-95da-c3b2cbc9e831.svg" width="500" alt="Wakatime"/></td>
-  </tr>
-</table>
-
+<!-- 弹出层容器 -->
+<div class="rss-popup" id="rssPopup">
+  <div class="rss-popup-inner">
+    <div class="rss-popup-title">怸歪小站镜像</div>
+    <div class="rss-popup-links">
+      <a href="https://cycy.fun" target="_blank" class="rss-popup-link">怸歪小站</a>
+      <span class="rss-popup-sep">|</span>
+      <a href="https://blog.776789.xyz" target="_blank" class="rss-popup-link">怸歪博客</a>
+      <span class="rss-popup-sep">|</span>
+      <a href="https://9020028.xyz" target="_blank" class="rss-popup-link">一个导航</a>
+    </div>
+  </div>
 </div>
 
-<img width="200%" src="https://cdn.jsdelivr.net/gh/oxn/oxn/assets/images/hr.gif" />
+<script>
+// ========== 网站运行时长计算脚本 ==========
+const startDate = new Date('2011-11-19'); // 建站起始日期
+function updateSiteTime() {
+  const now = new Date();
+  // 计算时间差值（毫秒）
+  const diff = now.getTime() - startDate.getTime();
+  const seconds = 1000;
+  const minutes = seconds * 60;
+  const hours = minutes * 60;
+  const days = hours * 24;
+  const years = days * 365;
+  // 拆分年、天、时、分、秒
+  const totalYears = Math.floor(diff / years);
+  let remainingTime = diff % years;
+  const diffDays = Math.floor(remainingTime / days);
+  remainingTime %= days;
+  const diffHours = Math.floor(remainingTime / hours);
+  remainingTime %= hours;
+  const diffMinutes = Math.floor(remainingTime / minutes);
+  remainingTime %= minutes;
+  const diffSeconds = Math.floor(remainingTime / seconds);
+  // 写入页面元素
+  document.getElementById('site-time').textContent =
+    '本站已苦苦支撑 ' + totalYears + ' 年 ' + diffDays + ' 天 ' +
+    diffHours + ' 小时 ' + diffMinutes + ' 分 ' + diffSeconds + ' 秒';
+}
+updateSiteTime();
+setInterval(updateSiteTime, 1000); // 每秒刷新一次时间
+</script>
 
-<div align="center" >
+<script>
+// ========== 明暗主题切换逻辑 ==========
+function toggleMode(){
+  const html = document.documentElement;
+  const btn = document.querySelector(".mode-toggle");
+  const current = html.getAttribute("data-theme");
+  // 切换深色/浅色
+  const newTheme = current === "dark" ? "light" : "dark";
+  html.setAttribute("data-theme", newTheme);
+  // 切换太阳/月亮图标
+  btn.textContent = newTheme === "dark" ? "🌙" : "☀️";
+  // 保存到本地存储，刷新页面记忆选择
+  localStorage.setItem("theme", newTheme);
+}
 
-<img src="https://cdn.jsdelivr.net/gh/oxn/oxn/assets/images/man.png" width="250" height="250" />
+// 页面加载完成，同步按钮图标
+window.onload = () => {
+  const theme = document.documentElement.getAttribute("data-theme");
+  const btn = document.querySelector(".mode-toggle");
+  btn.textContent = theme === "dark" ? "🌙" : "☀️";
+}
 
-![HTML5 Badge](https://img.shields.io/badge/HTML5-E34F26?logo=html5&logoColor=fff&style=flat)
-![CSS3 Badge](https://img.shields.io/badge/CSS3-1572B6?logo=css3&logoColor=fff&style=flat)
-![JavaScript Badge](https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=000&style=flat)
-![Vue.js Badge](https://img.shields.io/badge/Vue.js-4FC08D?logo=vuedotjs&logoColor=fff&style=flat)
-![React Badge](https://img.shields.io/badge/React-61DAFB?logo=react&logoColor=000&style=flat)
-![Python Badge](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=fff&style=flat)
-![Spring Badge](https://img.shields.io/badge/Spring-6DB33F?logo=spring&logoColor=fff&style=flat)
-![Qt Badge](https://img.shields.io/badge/Qt-41CD52?logo=qt&logoColor=fff&style=flat)
-![MongoDB Badge](https://img.shields.io/badge/MongoDB-47A248?logo=mongodb&logoColor=fff&style=flat)
-![Django Badge](https://img.shields.io/badge/Django-092E20?logo=django&logoColor=fff&style=flat)
+// 监听系统深色模式自动切换（用户未手动选择主题时生效）
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => {
+  if(!localStorage.getItem("theme")){
+    const html = document.documentElement;
+    const targetTheme = e.matches ? "dark" : "light";
+    html.setAttribute("data-theme", targetTheme);
+    document.querySelector(".mode-toggle").textContent = targetTheme === "dark" ? "🌙" : "☀️";
+  }
+})
+</script>
 
-![C Badge](https://img.shields.io/badge/C-A8B9CC?logo=c&logoColor=fff&style=flat)
-![C++ Badge](https://img.shields.io/badge/C%2B%2B-00599C?logo=cplusplus&logoColor=fff&style=flat)
-![C Sharp Badge](https://img.shields.io/badge/C%20Sharp-239120?logo=csharp&logoColor=fff&style=flat)
-![R Badge](https://img.shields.io/badge/R-276DC3?logo=r&logoColor=fff&style=flat)
-![PHP Badge](https://img.shields.io/badge/PHP-777BB4?logo=php&logoColor=fff&style=flat)
-![TypeScript Badge](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=fff&style=flat)
-![Node.js Badge](https://img.shields.io/badge/Node.js-393?logo=nodedotjs&logoColor=fff&style=flat)
-![jQuery Badge](https://img.shields.io/badge/jQuery-0769AD?logo=jquery&logoColor=fff&style=flat)
-![Vite Badge](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=fff&style=flat)
-![Android Badge](https://img.shields.io/badge/Android-3DDC84?logo=android&logoColor=fff&style=flat)
-![Three.js Badge](https://img.shields.io/badge/Three.js-092E20?logo=threedotjs&logoColor=fff&style=flat)
+<script>
+// ========== 底部文字点击弹出镜像站点弹窗 ==========
+const rssTrigger = document.getElementById('rssTrigger');
+const rssPopup = document.getElementById('rssPopup');
+let showFlag = false;
 
-![Xiaomi Badge](https://img.shields.io/badge/Xiaomi-FF6900?logo=xiaomi&logoColor=fff&style=flat)
-![Linux Badge](https://img.shields.io/badge/Linux-FCC624?logo=linux&logoColor=000&style=flat)
-![Lenovo Badge](https://img.shields.io/badge/Lenovo-E2231A?logo=lenovo&logoColor=fff&style=flat)
-![Windows Badge](https://img.shields.io/badge/Windows-0078D6?logo=windows&logoColor=fff&style=flat)
-![Visual Studio Code Badge](https://img.shields.io/badge/Visual%20Studio%20Code-007ACC?logo=visualstudiocode&logoColor=fff&style=flat)
-![Adobe Photoshop Badge](https://img.shields.io/badge/Adobe%20Photoshop-31A8FF?logo=adobephotoshop&logoColor=fff&style=flat)
-![Visual Studio Badge](https://img.shields.io/badge/Visual%20Studio-5C2D91?logo=visualstudio&logoColor=fff&style=flat)
-![GitHub Badge](https://img.shields.io/badge/GitHub-181717?logo=github&logoColor=fff&style=flat)
+// 动态计算弹窗位置，防止超出屏幕左右边界
+function setPopupPos(){
+  const rect = rssTrigger.getBoundingClientRect();
+  const popWidth = rssPopup.offsetWidth;
+  const left = rect.left + rect.width / 2 - popWidth / 2;
+  const top = rect.top - rssPopup.offsetHeight - 6;
+  // 左右最小边距8px，避免贴边
+  const minLeft = 8;
+  const maxLeft = window.innerWidth - popWidth - 8;
+  const realLeft = Math.max(minLeft, Math.min(left, maxLeft));
+  rssPopup.style.left = realLeft + 'px';
+  rssPopup.style.top = top + 'px';
+}
 
-<img src="https://skillicons.dev/icons?i=ps,ai,pr,c,cpp,cs,ts,discord,twitter,mongodb,instagram,idea,git" /><br>
+// 打开弹窗
+function openPopup(){
+  setPopupPos();
+  showFlag = true;
+  rssPopup.classList.add('show');
+}
+// 关闭弹窗
+function closePopup(){
+  showFlag = false;
+  rssPopup.classList.remove('show');
+}
 
-<!-- svg -->
-<img src="https://techstack-generator.vercel.app/kubernetes-icon.svg" alt="icon" width="65" style="width: 65px; height: 65px; margin-right: 50px; margin-bottom: 0px;" />
-<img src="https://techstack-generator.vercel.app/js-icon.svg" alt="icon" width="65" style="width: 65px; height: 65px; margin-right: 50px; margin-bottom: 0px;" />
-<img src="https://techstack-generator.vercel.app/mysql-icon.svg" alt="icon" width="65" style="width: 65px; height: 65px; margin-right: 50px; margin-bottom: 0px;" />
-<img src="https://techstack-generator.vercel.app/webpack-icon.svg" alt="icon" width="65" style="width: 65px; height: 65px; margin-right: 0px; margin-bottom: 0px;" />
-<img src="https://techstack-generator.vercel.app/docker-icon.svg" alt="icon" width="65" style="width: 65px; height: 65px; margin-right: 50px; margin-bottom: 0px;" /> 
-<img src="https://techstack-generator.vercel.app/redux-icon.svg" alt="icon" width="65" style="width: 65px; height: 65px; margin-right: 0px; margin-bottom: 0px;" />
-<img src="https://techstack-generator.vercel.app/java-icon.svg" alt="icon" width="65" style="width: 65px; height: 65px; margin-right: 0px; margin-bottom: 0px;" />
-<img src="https://techstack-generator.vercel.app/eslint-icon.svg" alt="icon" width="65" style="width: 65px; height: 65px; margin-right: 0px; margin-bottom: 0px;" />
-<img src="https://techstack-generator.vercel.app/aws-icon.svg" alt="icon" width="65" style="width: 65px; height: 65px; margin-right: 50px; margin-bottom: 0px;" />
-<img src="https://techstack-generator.vercel.app/ts-icon.svg" alt="icon" width="65" style="width: 65px; height: 65px; margin-right: 50px; margin-bottom: 0px;" />
-<img src="https://techstack-generator.vercel.app/nginx-icon.svg" alt="icon" width="65" style="width: 65px; height: 65px; margin-right: 50px; margin-bottom: 0px;" /><br>
+// 点击文字开关弹窗
+rssTrigger.onclick = function(e){
+  e.stopPropagation();
+  if(showFlag){
+    closePopup();
+  }else{
+    openPopup();
+  }
+}
 
-<!-- gif -->
-<img height="100" width="100" src="https://cdn.jsdelivr.net/gh/oxn/oxn/assets/images/html.webp">
-<img height="100" width="100" src="https://cdn.jsdelivr.net/gh/oxn/oxn/assets/images/cssgif.webp">
-<img height="100" width="100" src="https://cdn.jsdelivr.net/gh/oxn/oxn/assets/images/vscode.webp">
-<img height="100" width="100" src="https://cdn.jsdelivr.net/gh/oxn/oxn/assets/images/react.webp">
-<img height="95" width="95" src="https://cdn.jsdelivr.net/gh/oxn/oxn/assets/images/vue.webp">
-<img height="100" width="100" src="https://cdn.jsdelivr.net/gh/oxn/oxn/assets/images/python.webp">
-<img height="100" width="100" src="https://cdn.jsdelivr.net/gh/oxn/oxn/assets/images/js.webp">
-<img height="100" width="100" src="https://cdn.jsdelivr.net/gh/oxn/oxn/assets/images/github.webp">
+// 点击页面空白处关闭弹窗
+document.onclick = function(){
+  closePopup();
+}
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://cdn.jsdelivr.net/gh/oxn/oxn/profile-3d-contrib/profile-night-rainbow.svg" />
-  <source media="(prefers-color-scheme: light)" srcset="https://cdn.jsdelivr.net/gh/oxn/oxn/profile-3d-contrib/profile-gitblock.svg" />
-  <img src="https://cdn.jsdelivr.net/gh/oxn/oxn/profile-3d-contrib/profile-night-rainbow.svg" />
-</picture>
+// 点击弹窗内部不关闭
+rssPopup.onclick = function(e){
+  e.stopPropagation();
+}
 
-</div>
+// ESC按键关闭弹窗
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Escape') closePopup();
+})
 
-<img width="200%" src="https://cdn.jsdelivr.net/gh/oxn/oxn/assets/images/hr.gif" />
+// 窗口大小变化，重新定位弹窗
+window.addEventListener('resize', function(){
+  if(showFlag) setPopupPos();
+})
 
-<div align="center">
-
-<img width="36%" src="https://cdn.jsdelivr.net/gh/oxn/oxn/assets/images/githubgif.gif" />
-
-<table>
-  <tr>
-    <td><img src="https://cdn.jsdelivr.net/gh/oxn/oxn/github-metrics/people.followers.svg" alt="people.followers" /></td>
-  </tr>
-</table>
-
-<table>
-  <tr>
-    <td><img src="https://cdn.jsdelivr.net/gh/oxn/oxn/github-metrics/languages.indepth.svg" alt="languages.indepth" /></td>
-    <td><img src="https://cdn.jsdelivr.net/gh/oxn/oxn/github-metrics/reactions.svg" alt="reactions" /></td>
-  </tr>
-  <tr>
-    <td><img src="https://cdn.jsdelivr.net/gh/oxn/oxn/github-metrics/followup.indepth.svg" alt="followup.indepth" /></td>
-    <td><img src="https://cdn.jsdelivr.net/gh/oxn/oxn/github-metrics/repositories.pinned.svg" alt="repositories.pinned" /></td>
-  </tr>
-  <tr>
-    <td><img src="https://cdn.jsdelivr.net/gh/oxn/oxn/github-metrics/wakatime.svg" alt="wakatime" /></td>
-    <td><img src="https://cdn.jsdelivr.net/gh/oxn/oxn/github-metrics/stackoverflow.svg" alt="stackoverflow" /></td>
-  </tr>
-  <tr>
-    <td><img src="https://cdn.jsdelivr.net/gh/oxn/oxn/github-metrics/stars.svg" alt="stars" /></td>
-    <td><img src="https://cdn.jsdelivr.net/gh/oxn/oxn/github-metrics/stargazers.chartist.svg" alt="stargazers.chartist" /></td>
-  </tr>
-  <tr>
-    <td><img src="https://cdn.jsdelivr.net/gh/oxn/oxn/github-metrics/isocalendar.fullyear.svg" alt="isocalendar.fullyear" /></td>
-    <td><img src="https://cdn.jsdelivr.net/gh/oxn/oxn/github-metrics/calendar.full.svg" alt="calendar.full" /></td>
-  </tr>
-</table>
-
-<img width="120%" src="https://repobeats.axiom.co/api/embed/dd42bad8effa7ab44d2f3124414ee110611e044a.svg" />
-
-<img src="https://cdn.jsdelivr.net/gh/oxn/oxn/assets/images/icon.png" />
-</div>
-
-</div>
+// 页面滚动，重新定位弹窗
+window.addEventListener('scroll', () => {
+  if(showFlag) setPopupPos();
+})
+</script>
+</body>
+</html>
