@@ -20,7 +20,7 @@
   <a href="https://www.youtube.com/@怸歪"><img src="https://img.shields.io/badge/YouTube-油管-c32136" /></a>
   <a href="https://cycy.fun"><img src="https://img.shields.io/badge/CYCY.FUN-小站-8c36db" /></a>
   <a href="https://347777.xyz"><img src="https://img.shields.io/badge/347777.XYZ-博客-8c36db" /></a>
-  <a href="https://oxn.github.io/zz.html"><img src="https://img.shields.io/badge/$$$-打赏-07c160" /></a>
+  <a href="https://oxn.github.io/zz.html"><img src="https://img.shields.io/badge/$$$-资助-07c160" /></a>
   <a href="https://space.bilibili.com/675877055/"><img src="https://img.shields.io/badge/Bilibili-B站-ff69b4" /></a>&emsp;
   <!-- visitor -->
   <img src="https://komarev.com/ghpvc/?username=oxn&label=Views&color=orange&style=flat" alt="访问量统计" />&emsp;
